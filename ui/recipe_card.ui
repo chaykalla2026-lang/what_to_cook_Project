@@ -1,0 +1,209 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ui version="4.0">
+ <class>RecipeCard</class>
+ <widget class="QWidget" name="RecipeCard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>820</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Карточка рецепта</string>
+  </property>
+  <layout class="QVBoxLayout" name="layout21">
+   <item>
+    <widget class="QLabel" name="nameLabel">
+     <property name="text">
+      <string>Название рецепта</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="categoryLabel">
+     <property name="text">
+      <string>Категория</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="detailsLabel">
+     <property name="text">
+      <string>Время и базовые порции</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="photoGroup">
+     <property name="title">
+      <string>Фотография</string>
+     </property>
+     <layout class="QVBoxLayout" name="layout17">
+      <item>
+       <widget class="QLabel" name="photoGroupLabel">
+        <property name="text">
+         <string>Фотографии пока нет</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="layout18">
+     <item>
+      <widget class="QLabel" name="cardPersonsCaption">
+       <property name="text">
+        <string>Приготовить на персон:</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="personsSpin">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>20</number>
+       </property>
+       <property name="value">
+        <number>2</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTextBrowser" name="instructionsBrowser" />
+   </item>
+   <item>
+    <widget class="QTableWidget" name="ingredientsTable">
+     <property name="editTriggers">
+      <enum>QAbstractItemView::NoEditTriggers</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="rowCount">
+      <number>0</number>
+     </property>
+     <property name="columnCount">
+      <number>5</number>
+     </property>
+     <column>
+      <property name="text">
+       <string>Продукт</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Нужно</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Есть</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Не хватает</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Единица</string>
+      </property>
+     </column>
+    <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="nutritionLabel">
+     <property name="text">
+      <string>КБЖУ на порцию и выбранное число персон: расчёт пока не подключён.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="layout19">
+     <item>
+      <widget class="QPushButton" name="favoriteButton">
+       <property name="text">
+        <string>В избранное</string>
+       </property>
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Будет подключено на следующем этапе</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="shoppingButton">
+       <property name="text">
+        <string>Список покупок TXT</string>
+       </property>
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Будет подключено на следующем этапе</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="layout20">
+     <item>
+      <widget class="QPushButton" name="editButton">
+       <property name="text">
+        <string>Редактировать</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="timerButton">
+       <property name="text">
+        <string>Таймер</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton">
+       <property name="text">
+        <string>Закрыть</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources />
+ <connections />
+</ui>

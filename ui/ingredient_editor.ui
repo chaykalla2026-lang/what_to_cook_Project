@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ui version="4.0">
+ <class>IngredientEditor</class>
+ <widget class="QWidget" name="IngredientEditor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>540</width>
+    <height>420</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Ингредиент</string>
+  </property>
+  <layout class="QVBoxLayout" name="layout38">
+   <item>
+    <layout class="QHBoxLayout" name="layout30">
+     <item>
+      <widget class="QLabel" name="nameCaption">
+       <property name="text">
+        <string>Название:</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="nameEdit">
+       <property name="placeholderText">
+        <string>Название ингредиента</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="layout31">
+     <item>
+      <widget class="QLabel" name="unitCaption">
+       <property name="text">
+        <string>Единица:</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="unitCombo">
+       <item>
+        <property name="text">
+         <string>г</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>мл</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>шт</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="knownCheck">
+     <property name="text">
+      <string>КБЖУ известно</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="basisLabel">
+     <property name="text">
+      <string>КБЖУ на 100 г</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="kbjuGroup">
+     <property name="title">
+      <string>Пищевая ценность</string>
+     </property>
+     <layout class="QVBoxLayout" name="layout36">
+      <item>
+       <layout class="QHBoxLayout" name="layout32">
+        <item>
+         <widget class="QLabel" name="caloriesCaption">
+          <property name="text">
+           <string>Калории, ккал:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="caloriesEdit">
+          <property name="placeholderText">
+           <string />
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="layout33">
+        <item>
+         <widget class="QLabel" name="proteinCaption">
+          <property name="text">
+           <string>Белки, г:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="proteinEdit">
+          <property name="placeholderText">
+           <string />
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="layout34">
+        <item>
+         <widget class="QLabel" name="fatCaption">
+          <property name="text">
+           <string>Жиры, г:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="fatEdit">
+          <property name="placeholderText">
+           <string />
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="layout35">
+        <item>
+         <widget class="QLabel" name="carbsCaption">
+          <property name="text">
+           <string>Углеводы, г:</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="carbsEdit">
+          <property name="placeholderText">
+           <string />
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="layout37">
+     <item>
+      <widget class="QPushButton" name="saveButton">
+       <property name="text">
+        <string>Сохранить</string>
+       </property>
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Будет подключено на следующем этапе</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton">
+       <property name="text">
+        <string>Отмена</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources />
+ <connections />
+</ui>
