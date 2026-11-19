@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ui version="4.0">
+ <class>TimerWindow</class>
+ <widget class="QWidget" name="TimerWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>510</width>
+    <height>280</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Таймер приготовления</string>
+  </property>
+  <layout class="QVBoxLayout" name="layout48">
+   <item>
+    <layout class="QHBoxLayout" name="layout46">
+     <item>
+      <widget class="QLabel" name="durationCaption">
+       <property name="text">
+        <string>Продолжительность, мин.:</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="durationSpin">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>180</number>
+       </property>
+       <property name="value">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLCDNumber" name="timeDisplay">
+     <property name="digitCount">
+      <number>6</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="layout47">
+     <item>
+      <widget class="QPushButton" name="startButton">
+       <property name="text">
+        <string>Старт</string>
+       </property>
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pauseButton">
+       <property name="text">
+        <string>Пауза</string>
+       </property>
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="resetButton">
+       <property name="text">
+        <string>Сброс</string>
+       </property>
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="timerHint">
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    <property name="text"><string>Таймер продолжает работать при закрытии этого окна.</string></property></widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="closeButton">
+     <property name="text">
+      <string>Закрыть</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources />
+ <connections />
+</ui>
