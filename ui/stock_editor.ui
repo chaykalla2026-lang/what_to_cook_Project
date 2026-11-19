@@ -86,12 +86,9 @@
         <string>Сохранить</string>
        </property>
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
-       <property name="toolTip">
-        <string>Будет подключено на следующем этапе</string>
-       </property>
-      </widget>
+       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="closeButton">

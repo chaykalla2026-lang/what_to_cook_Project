@@ -27,13 +27,10 @@
     </item>
     <item>
      <widget class="QLabel" name="draftLabel">
-      <property name="text">
-       <string>Черновой интерфейс: просмотр примеров и переходы между окнами. Серые элементы будут подключены позже.</string>
-      </property>
       <property name="wordWrap">
        <bool>true</bool>
       </property>
-     </widget>
+     <property name="text"><string>Книга рецептов, домашние продукты и подбор блюд.</string></property></widget>
     </item>
     <item>
      <widget class="QTabWidget" name="mainTabs">
@@ -158,22 +155,19 @@
                 <string>Сбросить фильтры</string>
                </property>
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
-               <property name="toolTip">
-                <string>Будет подключено на следующем этапе</string>
-               </property>
-              </widget>
+               </widget>
              </item>
             </layout>
            </item>
           </layout>
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item>
+        <item><widget class="QLabel" name="recipesHint"><property name="text"><string /></property></widget></item><item>
          <widget class="QTableWidget" name="recipesTable">
           <property name="editTriggers">
            <enum>QAbstractItemView::NoEditTriggers</enum>
@@ -266,12 +260,9 @@
              <string>Удалить</string>
             </property>
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
-            <property name="toolTip">
-             <string>Будет подключено на следующем этапе</string>
-            </property>
-           </widget>
+            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="exportButton">
@@ -279,12 +270,9 @@
              <string>Экспорт CSV</string>
             </property>
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
-            <property name="toolTip">
-             <string>Будет подключено на следующем этапе</string>
-            </property>
-           </widget>
+            </widget>
           </item>
          </layout>
         </item>
@@ -310,11 +298,11 @@
            </item>
           </layout>
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>
-        <item>
+        <item><widget class="QLabel" name="ingredientsHint"><property name="text"><string /></property></widget></item><item>
          <widget class="QTableWidget" name="ingredientsTable">
           <property name="editTriggers">
            <enum>QAbstractItemView::NoEditTriggers</enum>
@@ -390,12 +378,9 @@
              <string>Удалить</string>
             </property>
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
-            <property name="toolTip">
-             <string>Будет подключено на следующем этапе</string>
-            </property>
-           </widget>
+            </widget>
           </item>
          </layout>
         </item>
@@ -408,13 +393,10 @@
        <layout class="QVBoxLayout" name="layout11">
         <item>
          <widget class="QLabel" name="fridgeHint">
-          <property name="text">
-           <string>Все домашние запасы: продукты из холодильника, морозилки и шкафа.</string>
-          </property>
           <property name="wordWrap">
            <bool>true</bool>
           </property>
-         </widget>
+         <property name="text"><string>Все домашние запасы.</string></property></widget>
         </item>
         <item>
          <widget class="QGroupBox" name="fridgeFilters">
@@ -431,7 +413,7 @@
            </item>
           </layout>
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -491,12 +473,9 @@
              <string>Удалить из холодильника</string>
             </property>
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
-            <property name="toolTip">
-             <string>Будет подключено на следующем этапе</string>
-            </property>
-           </widget>
+            </widget>
           </item>
          </layout>
         </item>
@@ -633,30 +612,24 @@
                 <string>Подобрать</string>
                </property>
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
-               <property name="toolTip">
-                <string>Будет подключено на следующем этапе</string>
-               </property>
-              </widget>
+               </widget>
              </item>
             </layout>
            </item>
           </layout>
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="selectionHint">
-          <property name="text">
-           <string>Здесь появятся результаты подбора. Расчёты будут добавлены позже.</string>
-          </property>
           <property name="wordWrap">
            <bool>true</bool>
           </property>
-         </widget>
+         <property name="text"><string>Нажмите «Подобрать», чтобы рассчитать блюда.</string></property></widget>
         </item>
         <item>
          <widget class="QTableWidget" name="selectionTable">
@@ -723,12 +696,9 @@
            <string>Открыть рецепт</string>
           </property>
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
-          <property name="toolTip">
-           <string>Будет подключено на следующем этапе</string>
-          </property>
-         </widget>
+          </widget>
         </item>
        </layout>
       </widget>
@@ -776,7 +746,7 @@
     <string>Экспорт рецептов в CSV</string>
    </property>
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionExit">

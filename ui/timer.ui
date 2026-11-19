@@ -56,12 +56,9 @@
         <string>Старт</string>
        </property>
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
-       <property name="toolTip">
-        <string>Будет подключено на следующем этапе</string>
-       </property>
-      </widget>
+       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pauseButton">
@@ -69,12 +66,9 @@
         <string>Пауза</string>
        </property>
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
-       <property name="toolTip">
-        <string>Будет подключено на следующем этапе</string>
-       </property>
-      </widget>
+       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="resetButton">
@@ -82,24 +76,18 @@
         <string>Сброс</string>
        </property>
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
-       <property name="toolTip">
-        <string>Будет подключено на следующем этапе</string>
-       </property>
-      </widget>
+       </widget>
      </item>
     </layout>
    </item>
    <item>
     <widget class="QLabel" name="timerHint">
-     <property name="text">
-      <string>Макет таймера. Отсчёт будет подключён на следующем этапе.</string>
-     </property>
      <property name="wordWrap">
       <bool>true</bool>
      </property>
-    </widget>
+    <property name="text"><string>Таймер продолжает работать при закрытии этого окна.</string></property></widget>
    </item>
    <item>
     <widget class="QPushButton" name="closeButton">
