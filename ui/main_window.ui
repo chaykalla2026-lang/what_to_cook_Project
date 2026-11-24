@@ -30,7 +30,10 @@
       <property name="wordWrap">
        <bool>true</bool>
       </property>
-     <property name="text"><string>Книга рецептов, домашние продукты и подбор блюд.</string></property></widget>
+      <property name="text">
+       <string>Книга рецептов, домашние продукты и подбор блюд.</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QTabWidget" name="mainTabs">
@@ -157,7 +160,7 @@
                <property name="enabled">
                 <bool>true</bool>
                </property>
-               </widget>
+              </widget>
              </item>
             </layout>
            </item>
@@ -167,7 +170,14 @@
           </property>
          </widget>
         </item>
-        <item><widget class="QLabel" name="recipesHint"><property name="text"><string /></property></widget></item><item>
+        <item>
+         <widget class="QLabel" name="recipesHint">
+          <property name="text">
+           <string />
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QTableWidget" name="recipesTable">
           <property name="editTriggers">
            <enum>QAbstractItemView::NoEditTriggers</enum>
@@ -229,7 +239,10 @@
             <string>Избранное</string>
            </property>
           </column>
-         <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>100</number>
+          </attribute>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="layout4">
@@ -262,7 +275,7 @@
             <property name="enabled">
              <bool>true</bool>
             </property>
-            </widget>
+           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="exportButton">
@@ -272,7 +285,7 @@
             <property name="enabled">
              <bool>true</bool>
             </property>
-            </widget>
+           </widget>
           </item>
          </layout>
         </item>
@@ -302,7 +315,14 @@
           </property>
          </widget>
         </item>
-        <item><widget class="QLabel" name="ingredientsHint"><property name="text"><string /></property></widget></item><item>
+        <item>
+         <widget class="QLabel" name="ingredientsHint">
+          <property name="text">
+           <string />
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QTableWidget" name="ingredientsTable">
           <property name="editTriggers">
            <enum>QAbstractItemView::NoEditTriggers</enum>
@@ -354,7 +374,10 @@
             <string>Углеводы, г</string>
            </property>
           </column>
-         <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>100</number>
+          </attribute>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="layout7">
@@ -380,7 +403,7 @@
             <property name="enabled">
              <bool>true</bool>
             </property>
-            </widget>
+           </widget>
           </item>
          </layout>
         </item>
@@ -396,7 +419,10 @@
           <property name="wordWrap">
            <bool>true</bool>
           </property>
-         <property name="text"><string>Все домашние запасы.</string></property></widget>
+          <property name="text">
+           <string>Все домашние запасы.</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="fridgeFilters">
@@ -449,7 +475,10 @@
             <string>Единица</string>
            </property>
           </column>
-         <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>100</number>
+          </attribute>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="layout10">
@@ -475,7 +504,7 @@
             <property name="enabled">
              <bool>true</bool>
             </property>
-            </widget>
+           </widget>
           </item>
          </layout>
         </item>
@@ -614,7 +643,7 @@
                <property name="enabled">
                 <bool>true</bool>
                </property>
-               </widget>
+              </widget>
              </item>
             </layout>
            </item>
@@ -629,7 +658,10 @@
           <property name="wordWrap">
            <bool>true</bool>
           </property>
-         <property name="text"><string>Нажмите «Подобрать», чтобы рассчитать блюда.</string></property></widget>
+          <property name="text">
+           <string>Нажмите «Подобрать», чтобы рассчитать блюда.</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QTableWidget" name="selectionTable">
@@ -688,7 +720,10 @@
             <string>Углеводы, г</string>
            </property>
           </column>
-         <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>100</number>
+          </attribute>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="openSelectionButton">
@@ -698,7 +733,7 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
-          </widget>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -775,6 +810,12 @@
    </property>
   </action>
   <widget class="QStatusBar" name="statusbar" />
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>700</height>
+   </size>
+  </property>
  </widget>
  <resources />
  <connections />

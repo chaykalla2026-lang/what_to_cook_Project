@@ -79,7 +79,7 @@ class GuiTests(unittest.TestCase):
         editor.portionsSpin.setValue(portions)
         ids = [row["id"] for row in editor.ingredients]
         editor.ingredientCombo.setCurrentIndex(ids.index(item))
-        editor.amountSpin.setValue(quantity)
+        editor.amountEdit.setText(str(quantity))
         editor.addRowButton.click()
         editor.saveButton.click()
         self.app.processEvents()
@@ -166,11 +166,11 @@ class GuiTests(unittest.TestCase):
         self.add_recipe(item, "Долгий", 400, 2, 60)
         self.w.new_stock()
         stock = self.w.stock_editor
-        stock.quantitySpin.setValue(150)
+        stock.quantityEdit.setText("150")
         stock.saveButton.click()
         self.assertEqual(self.w.database.stocks()[item], 150)
         self.w.new_stock()
-        stock.quantitySpin.setValue(200)
+        stock.quantityEdit.setText("200")
         self.question.return_value = NO
         stock.saveButton.click()
         self.assertEqual(self.w.database.stocks()[item], 150)
@@ -188,7 +188,7 @@ class GuiTests(unittest.TestCase):
         self.w.openSelectionButton.click()
         self.assertEqual(self.w.recipe_card.personsSpin.value(), 2)
         self.w.new_stock()
-        stock.quantitySpin.setValue(100)
+        stock.quantityEdit.setText("100")
         stock.saveButton.click()
         self.assertFalse(self.w.selection_valid)
         self.assertEqual(self.w.selectionTable.rowCount(), 0)

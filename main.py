@@ -44,6 +44,7 @@ class MainWindow(QMainWindow):
         self.stock_rows = []
         self.selection_rows = []
         self.selection_valid = False
+        self.selection_ever_calculated = False
         self.categoryCombo.addItems(["Все"] + CATEGORIES)
         self.personsSpin.setValue(self.database.persons())
         self.limitSpin.setEnabled(False)
@@ -202,6 +203,12 @@ class MainWindow(QMainWindow):
         )
         if self.current_recipes:
             message = f"Найдено рецептов: {len(self.current_recipes)}"
+            if any(row["nutrition"] is None for row in self.current_recipes):
+                message += ". «—» — КБЖУ не рассчитано."
+        elif self.favoritesCheck.isChecked() and not any(
+            row["is_favorite"] for row in self.views
+        ):
+            message = "В избранном пока нет рецептов. Добавьте их в карточке."
         elif self.views:
             message = (
                 "Рецепты не найдены. Измените условия или сбросьте фильтры."
@@ -218,10 +225,9 @@ class MainWindow(QMainWindow):
 
     def render_ingredients(self):
         text = normalized_name(self.ingredientSearch.text())
+        ingredients = self.database.ingredients()
         self.ingredient_rows = [
-            row
-            for row in self.database.ingredients()
-            if text in normalized_name(row["name"])
+            row for row in ingredients if text in normalized_name(row["name"])
         ]
         rows = []
         for ingredient in self.ingredient_rows:
@@ -245,16 +251,19 @@ class MainWindow(QMainWindow):
         self.ingredientsHint.setText(
             ""
             if rows
-            else "Ингредиенты не найдены. Добавьте новый ингредиент."
+            else (
+                "Ингредиенты не найдены. Измените поиск."
+                if ingredients
+                else "Добавьте ингредиенты здесь или при создании рецепта."
+            )
         )
         self.update_buttons()
 
     def render_fridge(self):
         text = normalized_name(self.fridgeSearch.text())
+        stocks = self.database.fridge()
         self.stock_rows = [
-            row
-            for row in self.database.fridge()
-            if text in normalized_name(row["name"])
+            row for row in stocks if text in normalized_name(row["name"])
         ]
         fill_table(
             self.fridgeTable,
@@ -267,7 +276,9 @@ class MainWindow(QMainWindow):
             "Все домашние запасы."
             if self.stock_rows
             else (
-                "Запасов пока нет. При подборе доступное количество "
+                "Запасы не найдены. Измените поиск."
+                if stocks
+                else "Запасов пока нет. При подборе доступное количество "
                 "продуктов считается нулевым."
             )
         )
@@ -302,7 +313,12 @@ class MainWindow(QMainWindow):
         self.selection_rows = []
         fill_table(self.selectionTable, [])
         self.selectionHint.setText(
-            "Нажмите «Подобрать», чтобы рассчитать блюда по текущим запасам."
+            "Условия изменились. Нажмите «Подобрать»."
+            if self.selection_ever_calculated
+            else (
+                "Нажмите «Подобрать», чтобы рассчитать блюда "
+                "по текущим запасам."
+            )
         )
         self.update_buttons()
 
@@ -322,6 +338,7 @@ class MainWindow(QMainWindow):
                 continue
             results.append(dict(recipe, missing_count=result["missing_count"]))
         self.selection_rows = results
+        self.selection_ever_calculated = True
         self.selection_valid = True
         self.render_selection()
 
@@ -485,7 +502,7 @@ class MainWindow(QMainWindow):
         QMessageBox.information(
             self,
             "О программе",
-            "Что приготовить?\nВерсия 0.2 — основные функции и SQLite.\n"
+            "Что приготовить?\nВерсия 0.3 — проверка по ТЗ и исправления.\n"
             "Папка пользовательских данных:\n" + self.database.directory,
         )
 

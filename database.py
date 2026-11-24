@@ -5,6 +5,7 @@ import sqlite3
 
 from data_loader import data_directory, project_file
 from logic import (
+    ValidationError,
     calculate,
     checked_integer,
     checked_number,
@@ -20,9 +21,10 @@ class Database:
             filename or os.path.join(data_directory(), "recipes.sqlite3")
         )
         self.directory = os.path.dirname(self.filename)
-        os.makedirs(self.directory, exist_ok=True)
-        self.connection = sqlite3.connect(self.filename)
+        self.connection = None
         try:
+            os.makedirs(self.directory, exist_ok=True)
+            self.connection = sqlite3.connect(self.filename)
             self.connection.execute("PRAGMA foreign_keys = ON")
             if (
                 self.connection.execute("PRAGMA quick_check").fetchone()[0]
@@ -43,8 +45,15 @@ class Database:
                     self.connection.execute(
                         "INSERT INTO app_settings VALUES (1, 2)"
                     )
+        except (OSError, sqlite3.Error) as error:
+            if self.connection is not None:
+                self.connection.close()
+            raise type(error)(
+                f"Файл базы данных: {self.filename}\n{error}"
+            ) from error
         except Exception:
-            self.connection.close()
+            if self.connection is not None:
+                self.connection.close()
             raise
 
     def query(self, sql, parameters=()):
@@ -67,11 +76,14 @@ class Database:
     def save_ingredient(self, values, ingredient_id=None):
         parameters = ingredient_values(values)
         existing = self.query(
-            "SELECT id FROM ingredients WHERE name_key = ?", (parameters[1],)
+            "SELECT id, name FROM ingredients WHERE name_key = ?",
+            (parameters[1],),
         )
         if existing and existing[0]["id"] != ingredient_id:
-            raise ValueError(
-                "Такой ингредиент уже есть. Выберите его в справочнике."
+            raise ValidationError(
+                f"Ингредиент «{existing[0]['name']}» уже есть. "
+                "Выберите его в справочнике.",
+                "name",
             )
         if ingredient_id is not None:
             old = self.ingredient(ingredient_id)
@@ -190,7 +202,9 @@ class Database:
         return {row["ingredient_id"]: row["quantity"] for row in self.fridge()}
 
     def save_stock(self, ingredient_id, quantity):
-        quantity = float(checked_number(quantity, "Доступное количество"))
+        quantity = float(
+            checked_number(quantity, "Доступное количество", field="quantity")
+        )
         if not self.ingredient(ingredient_id):
             raise ValueError("Сначала выберите ингредиент из справочника.")
         with self.connection:

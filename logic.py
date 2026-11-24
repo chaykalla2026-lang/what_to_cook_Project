@@ -5,41 +5,59 @@ from decimal import ROUND_CEILING, ROUND_HALF_UP, Decimal, InvalidOperation
 from data_loader import CATEGORIES, NUTRIENTS, UNITS
 
 
+class ValidationError(ValueError):
+    """Ошибка ввода с указанием полей, которые нужно исправить."""
+
+    def __init__(self, message, fields=()):
+        super().__init__(message)
+        self.fields = [fields] if isinstance(fields, str) else list(fields)
+
+
 def normalized_name(text):
     return " ".join(text.split()).casefold()
 
 
-def checked_text(text, title, maximum):
+def checked_text(text, title, maximum, field=None):
     text = text.strip()
     if not text or len(text) > maximum:
-        raise ValueError(f"{title}: введите от 1 до {maximum} символов.")
+        raise ValidationError(
+            f"{title}: введите от 1 до {maximum} символов.", field or ()
+        )
     return text
 
 
-def checked_integer(value, title, minimum, maximum):
+def checked_integer(value, title, minimum, maximum, field=None):
     text = str(value).strip()
     if not text.isdecimal() or not minimum <= int(text) <= maximum:
-        raise ValueError(
-            f"{title}: введите целое число от {minimum} до {maximum}."
+        raise ValidationError(
+            f"{title}: введите целое число от {minimum} до {maximum}.",
+            field or (),
         )
     return int(text)
 
 
-def checked_number(value, title, minimum="0", maximum="999999.99"):
+def checked_number(value, title, minimum="0", maximum="999999.99", field=None):
     text = str(value).strip().replace(",", ".")
     if not text or any(char not in "0123456789." for char in text):
-        raise ValueError(f"{title}: введите неотрицательное число.")
+        raise ValidationError(
+            f"{title}: введите неотрицательное число.", field or ()
+        )
     try:
         number = Decimal(text)
     except InvalidOperation:
-        raise ValueError(f"{title}: неверное число.") from None
+        raise ValidationError(
+            f"{title}: неверное число.", field or ()
+        ) from None
     if not number.is_finite() or not Decimal(minimum) <= number <= Decimal(
         maximum
     ):
-        raise ValueError(f"{title}: допустимо от {minimum} до {maximum}.")
+        raise ValidationError(
+            f"{title}: допустимо от {minimum} до {maximum}.", field or ()
+        )
     if number.as_tuple().exponent < -2:
-        raise ValueError(
-            f"{title}: допускается максимум два знака после запятой."
+        raise ValidationError(
+            f"{title}: допускается максимум два знака после запятой.",
+            field or (),
         )
     return number
 
@@ -52,45 +70,65 @@ def number_text(value, places=2):
 
 
 def ingredient_values(values):
-    name = checked_text(" ".join(values["name"].split()), "Название", 80)
+    name = checked_text(
+        " ".join(values["name"].split()), "Название", 80, "name"
+    )
     unit = values["unit"]
     if unit not in UNITS:
-        raise ValueError("Выберите граммы, миллилитры или штуки.")
+        raise ValidationError("Выберите граммы, миллилитры или штуки.", "unit")
     numbers = [values.get(key) for key in NUTRIENTS]
     missing = [value is None or str(value).strip() == "" for value in numbers]
-    if any(missing) and not all(missing):
-        raise ValueError(
-            "Заполните все четыре показателя КБЖУ или отключите их."
+    if any(missing) and (not all(missing) or values.get("kbju_known", False)):
+        titles = ["калории", "белки", "жиры", "углеводы"]
+        empty = [key for key, absent in zip(NUTRIENTS, missing) if absent]
+        names = [title for title, absent in zip(titles, missing) if absent]
+        raise ValidationError(
+            "Заполните показатели: "
+            + ", ".join(names)
+            + ". Либо отключите флажок «КБЖУ известно».",
+            empty,
         )
     numbers = (
         [None] * 4
         if all(missing)
         else [
-            float(checked_number(value, "КБЖУ", maximum="99999.99"))
-            for value in numbers
+            float(checked_number(value, "КБЖУ", maximum="99999.99", field=key))
+            for key, value in zip(NUTRIENTS, numbers)
         ]
     )
     return [name, normalized_name(name), unit] + numbers
 
 
 def recipe_values(values, composition):
-    name = checked_text(values["name"], "Название рецепта", 100)
-    instructions = checked_text(values["instructions"], "Инструкция", 10000)
-    if values["category"] not in CATEGORIES:
-        raise ValueError("Выберите категорию рецепта.")
-    portions = checked_integer(
-        values["base_portions"], "Базовые порции", 1, 20
+    name = checked_text(values["name"], "Название рецепта", 100, "name")
+    instructions = checked_text(
+        values["instructions"], "Инструкция", 10000, "instructions"
     )
-    minutes = checked_integer(values["cooking_minutes"], "Время", 1, 1440)
+    if values["category"] not in CATEGORIES:
+        raise ValidationError("Выберите категорию рецепта.", "category")
+    portions = checked_integer(
+        values["base_portions"], "Базовые порции", 1, 20, "base_portions"
+    )
+    minutes = checked_integer(
+        values["cooking_minutes"], "Время", 1, 1440, "cooking_minutes"
+    )
     if not 1 <= len(composition) <= 50:
-        raise ValueError("Добавьте от 1 до 50 ингредиентов.")
+        raise ValidationError(
+            "Добавьте от 1 до 50 ингредиентов.", "composition"
+        )
     ids = [int(row["ingredient_id"]) for row in composition]
     if len(set(ids)) != len(ids):
-        raise ValueError("Один ингредиент нельзя добавлять в рецепт дважды.")
+        raise ValidationError(
+            "Один ингредиент нельзя добавлять в рецепт дважды.", "composition"
+        )
     rows = [
         (
             ingredient_id,
-            float(checked_number(row["quantity"], "Количество", "0.01")),
+            float(
+                checked_number(
+                    row["quantity"], "Количество", "0.01", field="composition"
+                )
+            ),
         )
         for ingredient_id, row in zip(ids, composition)
     ]

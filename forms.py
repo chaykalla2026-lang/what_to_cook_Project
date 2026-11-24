@@ -24,7 +24,14 @@ from file_tools import (
     show_photo,
     validate_photo,
 )
-from logic import calculate, number_text, recipe_values
+from logic import (
+    ValidationError,
+    calculate,
+    checked_number,
+    normalized_name,
+    number_text,
+    recipe_values,
+)
 
 YES = QMessageBox.StandardButton.Yes
 NO = QMessageBox.StandardButton.No
@@ -35,10 +42,14 @@ def fill_table(table, rows):
     table.setRowCount(len(rows))
     for r, row in enumerate(rows):
         for c, value in enumerate(row):
-            table.setItem(r, c, QTableWidgetItem(str(value)))
+            item = QTableWidgetItem(str(value))
+            if value == "—":
+                item.setToolTip("КБЖУ не рассчитано")
+            table.setItem(r, c, item)
     table.horizontalHeader().setSectionResizeMode(
-        QHeaderView.ResizeMode.ResizeToContents
+        QHeaderView.ResizeMode.Interactive
     )
+    table.resizeColumnsToContents()
     table.horizontalHeader().setStretchLastSection(True)
 
 
@@ -74,13 +85,47 @@ class EditorWindow(SimpleWindow):
         self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.initial_state = None
         self.saved = False
+        self.error_fields = {}
+        self.formErrorLabel.setStyleSheet("color: #b3261e;")
+        self.formErrorLabel.hide()
+
+    def setup_errors(self, fields):
+        self.error_fields = fields
+        for widget, label in fields.values():
+            label.setStyleSheet("color: #b3261e;")
+            label.hide()
+
+    def clear_errors(self):
+        for widget, label in self.error_fields.values():
+            widget.setStyleSheet("")
+            label.clear()
+            label.hide()
+        self.formErrorLabel.clear()
+        self.formErrorLabel.hide()
 
     def open_editor(self):
+        self.clear_errors()
         self.saved = False
         self.initial_state = self.state()
         self.show()
 
     def warning(self, error):
+        self.clear_errors()
+        for field in getattr(error, "fields", []):
+            if field in self.error_fields:
+                widget, label = self.error_fields[field]
+                widget.setStyleSheet(
+                    "border: 1px solid #b3261e; background: #fff4f4;"
+                )
+                label.setText(
+                    "Заполните это поле."
+                    if len(error.fields) > 1
+                    else str(error)
+                )
+                label.show()
+        if not getattr(error, "fields", []):
+            self.formErrorLabel.setText(str(error))
+            self.formErrorLabel.show()
         QMessageBox.warning(self, "Проверьте данные", str(error))
 
     def closeEvent(self, event):
@@ -113,6 +158,16 @@ class IngredientEditor(EditorWindow):
         super().__init__("ingredient_editor.ui")
         self.database, self.on_change = database, on_change
         self.ingredient_id = None
+        self.setup_errors(
+            {
+                "name": (self.nameEdit, self.nameError),
+                "unit": (self.unitCombo, self.unitError),
+                "calories": (self.caloriesEdit, self.caloriesError),
+                "protein": (self.proteinEdit, self.proteinError),
+                "fat": (self.fatEdit, self.fatError),
+                "carbs": (self.carbsEdit, self.carbsError),
+            }
+        )
         self.unitCombo.currentTextChanged.connect(self.update_basis)
         self.knownCheck.toggled.connect(self.kbjuGroup.setEnabled)
         self.saveButton.clicked.connect(self.save)
@@ -160,6 +215,7 @@ class IngredientEditor(EditorWindow):
         values = {
             "name": self.nameEdit.text(),
             "unit": self.unitCombo.currentText(),
+            "kbju_known": self.knownCheck.isChecked(),
         }
         for key, field in zip(
             NUTRIENTS,
@@ -193,6 +249,23 @@ class RecipeEditor(EditorWindow):
         self.existing_photo = None
         self.pending_photo = None
         self.ingredients = []
+        self.setup_errors(
+            {
+                "name": (self.nameEdit, self.nameError),
+                "category": (self.categoryCombo, self.categoryError),
+                "cooking_minutes": (self.minutesEdit, self.minutesError),
+                "base_portions": (self.portionsSpin, self.portionsError),
+                "instructions": (
+                    self.instructionsEdit,
+                    self.instructionsError,
+                ),
+                "composition": (self.ingredientsTable, self.compositionError),
+                "photo": (self.editorPhotoGroupLabel, self.photoError),
+                "ingredient": (self.ingredientCombo, self.ingredientError),
+                "amount": (self.amountEdit, self.amountError),
+            }
+        )
+        self.ingredientSearch.textChanged.connect(self.refresh_ingredients)
         self.ingredientCombo.currentIndexChanged.connect(
             self.update_amount_unit
         )
@@ -200,6 +273,9 @@ class RecipeEditor(EditorWindow):
         self.removeRowButton.clicked.connect(self.remove_ingredient)
         self.editAmountButton.clicked.connect(self.change_amount)
         self.ingredientsTable.cellDoubleClicked.connect(self.change_amount)
+        self.ingredientsTable.itemSelectionChanged.connect(
+            self.update_composition_buttons
+        )
         self.saveButton.clicked.connect(self.save)
         self.choosePhotoButton.clicked.connect(self.choose_photo)
         self.removePhotoButton.clicked.connect(self.remove_photo)
@@ -220,13 +296,23 @@ class RecipeEditor(EditorWindow):
         )
 
     def refresh_ingredients(self, preferred_id=None):
+        # textChanged передаёт строку поиска, а сохранение — числовой id.
+        if not isinstance(preferred_id, int):
+            preferred_id = None
+        if preferred_id is not None:
+            self.ingredientSearch.clear()
         current = self.ingredientCombo.currentIndex()
         selected = (
             self.ingredients[current]["id"]
             if 0 <= current < len(self.ingredients)
             else None
         )
-        self.ingredients = self.database.ingredients()
+        text = normalized_name(self.ingredientSearch.text())
+        self.ingredients = [
+            row
+            for row in self.database.ingredients()
+            if text in normalized_name(row["name"])
+        ]
         self.ingredientCombo.clear()
         self.ingredientCombo.addItems(
             [row["name"] for row in self.ingredients]
@@ -238,6 +324,11 @@ class RecipeEditor(EditorWindow):
         self.addRowButton.setEnabled(bool(self.ingredients))
         self.update_amount_unit()
         self.draw_composition()
+
+    def update_composition_buttons(self):
+        selected = selected_row(self.ingredientsTable) >= 0
+        self.editAmountButton.setEnabled(selected)
+        self.removeRowButton.setEnabled(selected)
 
     def update_amount_unit(self):
         index = self.ingredientCombo.currentIndex()
@@ -262,8 +353,11 @@ class RecipeEditor(EditorWindow):
                 if row["ingredient_id"] in ingredients
             ],
         )
+        self.update_composition_buttons()
 
     def show_recipe(self, recipe=None):
+        self.ingredientSearch.clear()
+        self.amountEdit.setText("1")
         self.recipe_id = recipe["id"] if recipe else None
         self.nameEdit.setText(recipe["name"] if recipe else "")
         self.instructionsEdit.setPlainText(
@@ -299,24 +393,45 @@ class RecipeEditor(EditorWindow):
     def add_ingredient(self):
         index = self.ingredientCombo.currentIndex()
         if index < 0:
-            self.warning("Сначала добавьте ингредиент в справочник.")
+            self.warning(
+                ValidationError(
+                    "Выберите ингредиент. Измените поиск или создайте новый.",
+                    "ingredient",
+                )
+            )
             return
         ingredient_id = self.ingredients[index]["id"]
         if any(
             row["ingredient_id"] == ingredient_id for row in self.composition
         ):
             self.warning(
-                "Ингредиент уже добавлен. "
-                "Выберите строку и измените количество."
+                ValidationError(
+                    "Ингредиент уже добавлен. "
+                    "Выберите строку и измените количество.",
+                    "composition",
+                )
             )
             return
         if len(self.composition) >= 50:
-            self.warning("В рецепте может быть не более 50 ингредиентов.")
+            self.warning(
+                ValidationError(
+                    "В рецепте может быть не более 50 ингредиентов.",
+                    "composition",
+                )
+            )
             return
+        try:
+            amount = checked_number(
+                self.amountEdit.text(), "Количество", "0.01", field="amount"
+            )
+        except ValueError as error:
+            self.warning(error)
+            return
+        self.clear_errors()
         self.composition.append(
             {
                 "ingredient_id": ingredient_id,
-                "quantity": self.amountSpin.value(),
+                "quantity": float(amount),
             }
         )
         self.draw_composition()
@@ -325,17 +440,22 @@ class RecipeEditor(EditorWindow):
         index = selected_row(self.ingredientsTable)
         if index < 0:
             return
-        value, accepted = QInputDialog.getDouble(
+        text, accepted = QInputDialog.getText(
             self,
             "Количество",
-            "Новое количество:",
-            float(self.composition[index]["quantity"]),
-            0.01,
-            999999.99,
-            2,
+            "Новое количество (до двух знаков после запятой):",
+            text=number_text(self.composition[index]["quantity"]),
         )
         if accepted:
-            self.composition[index]["quantity"] = value
+            try:
+                value = checked_number(
+                    text, "Количество", "0.01", field="composition"
+                )
+            except ValueError as error:
+                self.warning(error)
+                return
+            self.clear_errors()
+            self.composition[index]["quantity"] = float(value)
             self.draw_composition()
 
     def remove_ingredient(self):
@@ -352,7 +472,7 @@ class RecipeEditor(EditorWindow):
             try:
                 validate_photo(filename)
             except (OSError, ValueError) as error:
-                self.warning(error)
+                self.warning(ValidationError(str(error), "photo"))
                 return
             self.pending_photo = filename
             self.update_photo()
@@ -405,11 +525,17 @@ class StockEditor(EditorWindow):
         self.database, self.on_change = database, on_change
         self.ingredients = []
         self.ingredient_id = None
+        self.setup_errors(
+            {
+                "ingredient": (self.ingredientCombo, self.ingredientError),
+                "quantity": (self.quantityEdit, self.quantityError),
+            }
+        )
         self.ingredientCombo.currentIndexChanged.connect(self.update_unit)
         self.saveButton.clicked.connect(self.save)
 
     def state(self):
-        return (self.ingredientCombo.currentText(), self.quantitySpin.value())
+        return (self.ingredientCombo.currentText(), self.quantityEdit.text())
 
     def refresh_ingredients(self, preferred_id=None):
         if self.ingredient_id is not None:
@@ -439,7 +565,9 @@ class StockEditor(EditorWindow):
         self.ingredient_id = stock["ingredient_id"] if stock else None
         self.refresh_ingredients()
         self.ingredientCombo.setEnabled(stock is None)
-        self.quantitySpin.setValue(stock["quantity"] if stock else 0)
+        self.quantityEdit.setText(
+            number_text(stock["quantity"]) if stock else "0"
+        )
         self.open_editor()
 
     def save(self):
@@ -448,6 +576,15 @@ class StockEditor(EditorWindow):
             self.warning("Сначала создайте ингредиент в справочнике.")
             return
         ingredient_id = self.ingredients[index]["id"]
+        try:
+            quantity = checked_number(
+                self.quantityEdit.text(),
+                "Доступное количество",
+                field="quantity",
+            )
+        except ValueError as error:
+            self.warning(error)
+            return
         existing = self.database.stocks().get(ingredient_id)
         if self.ingredient_id is None and existing is not None:
             answer = QMessageBox.question(
@@ -462,7 +599,7 @@ class StockEditor(EditorWindow):
             if answer != YES:
                 return
         try:
-            self.database.save_stock(ingredient_id, self.quantitySpin.value())
+            self.database.save_stock(ingredient_id, quantity)
         except (ValueError, sqlite3.Error) as error:
             self.warning(error)
             return
@@ -475,6 +612,9 @@ class SettingsWindow(EditorWindow):
     def __init__(self, database, on_change):
         super().__init__("settings.ui")
         self.database, self.on_change = database, on_change
+        self.setup_errors(
+            {"preferred_servings": (self.personsSpin, self.personsError)}
+        )
         self.saveButton.clicked.connect(self.save)
 
     def state(self):
