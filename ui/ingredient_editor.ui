@@ -27,11 +27,28 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="nameEdit">
-       <property name="placeholderText">
-        <string>Название ингредиента</string>
+      <layout class="QVBoxLayout" name="nameEditFieldLayout">
+       <property name="spacing">
+        <number>2</number>
        </property>
-      </widget>
+       <item>
+        <widget class="QLineEdit" name="nameEdit">
+         <property name="placeholderText">
+          <string>Название ингредиента</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="nameError">
+         <property name="text">
+          <string />
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -48,23 +65,40 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="unitCombo">
+      <layout class="QVBoxLayout" name="unitComboFieldLayout">
+       <property name="spacing">
+        <number>2</number>
+       </property>
        <item>
-        <property name="text">
-         <string>г</string>
-        </property>
+        <widget class="QComboBox" name="unitCombo">
+         <item>
+          <property name="text">
+           <string>г</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>мл</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>шт</string>
+          </property>
+         </item>
+        </widget>
        </item>
        <item>
-        <property name="text">
-         <string>мл</string>
-        </property>
+        <widget class="QLabel" name="unitError">
+         <property name="text">
+          <string />
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
-       <item>
-        <property name="text">
-         <string>шт</string>
-        </property>
-       </item>
-      </widget>
+      </layout>
      </item>
     </layout>
    </item>
@@ -104,11 +138,28 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="caloriesEdit">
-          <property name="placeholderText">
-           <string />
+         <layout class="QVBoxLayout" name="caloriesEditFieldLayout">
+          <property name="spacing">
+           <number>2</number>
           </property>
-         </widget>
+          <item>
+           <widget class="QLineEdit" name="caloriesEdit">
+            <property name="placeholderText">
+             <string />
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="caloriesError">
+            <property name="text">
+             <string />
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -125,11 +176,28 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="proteinEdit">
-          <property name="placeholderText">
-           <string />
+         <layout class="QVBoxLayout" name="proteinEditFieldLayout">
+          <property name="spacing">
+           <number>2</number>
           </property>
-         </widget>
+          <item>
+           <widget class="QLineEdit" name="proteinEdit">
+            <property name="placeholderText">
+             <string />
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="proteinError">
+            <property name="text">
+             <string />
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -146,11 +214,28 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="fatEdit">
-          <property name="placeholderText">
-           <string />
+         <layout class="QVBoxLayout" name="fatEditFieldLayout">
+          <property name="spacing">
+           <number>2</number>
           </property>
-         </widget>
+          <item>
+           <widget class="QLineEdit" name="fatEdit">
+            <property name="placeholderText">
+             <string />
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="fatError">
+            <property name="text">
+             <string />
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
@@ -167,17 +252,54 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="carbsEdit">
-          <property name="placeholderText">
-           <string />
+         <layout class="QVBoxLayout" name="carbsEditFieldLayout">
+          <property name="spacing">
+           <number>2</number>
           </property>
-         </widget>
+          <item>
+           <widget class="QLineEdit" name="carbsEdit">
+            <property name="placeholderText">
+             <string />
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="carbsError">
+            <property name="text">
+             <string />
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
      </layout>
      <property name="enabled">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="editHint">
+     <property name="text">
+      <string>Изменения будут учтены во всех рецептах с этим ингредиентом.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="formErrorLabel">
+     <property name="text">
+      <string />
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -189,10 +311,7 @@
         <string>Сохранить</string>
        </property>
        <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>Будет подключено на следующем этапе</string>
+        <bool>true</bool>
        </property>
       </widget>
      </item>

@@ -74,6 +74,52 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(self.db.persons(), 3)
         self.assertEqual(self.db.stocks()[item], 150.25)
 
+    def test_theme_migration_preserves_existing_database(self):
+        item = self.db.save_ingredient(ingredient())
+        rid = self.db.save_recipe(
+            recipe(), [{"ingredient_id": item, "quantity": 200}]
+        )
+        self.db.set_favorite(rid, True)
+        self.db.save_stock(item, "100.25")
+        self.db.save_persons(5)
+        with self.db.connection:
+            self.db.connection.execute(
+                "ALTER TABLE app_settings RENAME TO old_settings"
+            )
+            self.db.connection.execute(
+                "CREATE TABLE app_settings (id INTEGER PRIMARY KEY, "
+                "preferred_servings INTEGER NOT NULL)"
+            )
+            self.db.connection.execute(
+                "INSERT INTO app_settings SELECT id, preferred_servings "
+                "FROM old_settings"
+            )
+            self.db.connection.execute("DROP TABLE old_settings")
+        self.db.close()
+        self.db = Database(self.filename)
+        self.assertEqual(self.db.theme(), "light")
+        self.assertEqual(self.db.persons(), 5)
+        self.assertEqual(self.db.recipe(rid)["is_favorite"], 1)
+        self.assertEqual(len(self.db.composition(rid)), 1)
+        self.assertEqual(self.db.stocks()[item], 100.25)
+        self.db.save_settings(4, "dark")
+        self.db.close()
+        self.db = Database(self.filename)
+        self.assertEqual((self.db.persons(), self.db.theme()), (4, "dark"))
+        self.assertEqual(
+            self.db.connection.execute("PRAGMA foreign_key_check").fetchall(),
+            [],
+        )
+
+    def test_settings_validation_is_atomic(self):
+        self.db.save_settings(6, "dark")
+        for persons, theme in [(0, "light"), (3, "pink")]:
+            with self.assertRaises(ValueError):
+                self.db.save_settings(persons, theme)
+            self.assertEqual((self.db.persons(), self.db.theme()), (6, "dark"))
+        self.db.save_persons(2)
+        self.assertEqual(self.db.theme(), "dark")
+
     def test_ingredient_duplicate_and_unit(self):
         item = self.db.save_ingredient(ingredient(" Мука  пшеничная "))
         with self.assertRaises(ValueError):

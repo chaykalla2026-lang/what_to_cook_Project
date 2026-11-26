@@ -27,7 +27,24 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="ingredientCombo" />
+      <layout class="QVBoxLayout" name="ingredientComboFieldLayout">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <item>
+        <widget class="QComboBox" name="ingredientCombo" />
+       </item>
+       <item>
+        <widget class="QLabel" name="ingredientError">
+         <property name="text">
+          <string />
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -51,20 +68,31 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="quantitySpin">
-       <property name="minimum">
-        <double>0</double>
-       </property>
-       <property name="maximum">
-        <double>999999.99</double>
-       </property>
-       <property name="value">
-        <double>0</double>
-       </property>
-       <property name="decimals">
+      <layout class="QVBoxLayout" name="quantityEditFieldLayout">
+       <property name="spacing">
         <number>2</number>
        </property>
-      </widget>
+       <item>
+        <widget class="QLineEdit" name="quantityEdit">
+         <property name="text">
+          <string>0</string>
+         </property>
+         <property name="placeholderText">
+          <string>Доступное количество</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="quantityError">
+         <property name="text">
+          <string />
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QLabel" name="unitLabel">
@@ -79,6 +107,16 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="formErrorLabel">
+     <property name="text">
+      <string />
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="layout41">
      <item>
       <widget class="QPushButton" name="saveButton">
@@ -86,10 +124,7 @@
         <string>Сохранить</string>
        </property>
        <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>Будет подключено на следующем этапе</string>
+        <bool>true</bool>
        </property>
       </widget>
      </item>

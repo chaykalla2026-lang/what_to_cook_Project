@@ -39,11 +39,21 @@ class Database:
                 for statement in statements:
                     if statement.strip():
                         self.connection.execute(statement)
+                columns = self.connection.execute(
+                    "PRAGMA table_info(app_settings)"
+                ).fetchall()
+                if "theme" not in [column[1] for column in columns]:
+                    self.connection.execute(
+                        "ALTER TABLE app_settings ADD COLUMN theme TEXT "
+                        "NOT NULL DEFAULT 'light' "
+                        "CHECK(theme IN ('light', 'dark'))"
+                    )
                 if not self.connection.execute(
                     "SELECT id FROM app_settings"
                 ).fetchone():
                     self.connection.execute(
-                        "INSERT INTO app_settings VALUES (1, 2)"
+                        "INSERT INTO app_settings "
+                        "(id, preferred_servings) VALUES (1, 2)"
                     )
         except (OSError, sqlite3.Error) as error:
             if self.connection is not None:
@@ -240,6 +250,22 @@ class Database:
             self.connection.execute(
                 "UPDATE app_settings SET preferred_servings=? WHERE id=1",
                 (persons,),
+            )
+
+    def theme(self):
+        return self.connection.execute(
+            "SELECT theme FROM app_settings WHERE id=1"
+        ).fetchone()[0]
+
+    def save_settings(self, persons, theme):
+        persons = checked_integer(persons, "Число персон", 1, 20)
+        if theme not in ("light", "dark"):
+            raise ValueError("Выберите светлую или тёмную тему.")
+        with self.connection:
+            self.connection.execute(
+                "UPDATE app_settings SET preferred_servings=?, theme=? "
+                "WHERE id=1",
+                (persons, theme),
             )
 
     def recipe_views(self):

@@ -58,7 +58,7 @@
         <property name="wordWrap">
          <bool>true</bool>
         </property>
-       </widget>
+       <property name="minimumSize"><size><width>0</width><height>165</height></size></property></widget>
       </item>
      </layout>
     </widget>
@@ -155,12 +155,9 @@
         <string>В избранное</string>
        </property>
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
-       <property name="toolTip">
-        <string>Будет подключено на следующем этапе</string>
-       </property>
-      </widget>
+       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="shoppingButton">
@@ -168,12 +165,9 @@
         <string>Список покупок TXT</string>
        </property>
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
-       <property name="toolTip">
-        <string>Будет подключено на следующем этапе</string>
-       </property>
-      </widget>
+       </widget>
      </item>
     </layout>
    </item>

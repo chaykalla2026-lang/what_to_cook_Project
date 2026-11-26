@@ -32,5 +32,6 @@ CREATE TABLE IF NOT EXISTS fridge (
 );
 CREATE TABLE IF NOT EXISTS app_settings (
     id INTEGER PRIMARY KEY CHECK(id = 1),
-    preferred_servings INTEGER NOT NULL DEFAULT 2 CHECK(preferred_servings BETWEEN 1 AND 20)
+    preferred_servings INTEGER NOT NULL DEFAULT 2 CHECK(preferred_servings BETWEEN 1 AND 20),
+    theme TEXT NOT NULL DEFAULT 'light' CHECK(theme IN ('light', 'dark'))
 );

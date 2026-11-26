@@ -2,6 +2,7 @@
 
 # ruff: noqa: E402 -- платформа выбирается до импорта Qt.
 import os
+import sqlite3
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 import tempfile
@@ -10,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPalette, QPixmap
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMessageBox
 
 from forms import NO, YES
@@ -128,6 +129,70 @@ class GuiTests(unittest.TestCase):
         self.assertEqual(self.w.database.persons(), 3)
         self.assertEqual(self.w.recipesTable.rowCount(), 1)
         self.assertEqual(self.w.database.recipe(rid)["is_favorite"], 1)
+
+    def test_themes_cancel_save_restart_and_preserve_picker(self):
+        item = self.add_ingredient()
+        self.add_recipe(item)
+        self.w.mainTabs.setCurrentIndex(3)
+        self.w.select_recipes()
+        before = list(self.w.selection_rows)
+        settings = self.w.settings_window
+        settings.open_settings()
+        settings.themeCombo.setCurrentIndex(1)
+        self.question.return_value = NO
+        self.assertFalse(settings.close())
+        self.question.return_value = YES
+        settings.close()
+        self.assertEqual(self.w.database.theme(), "light")
+        settings.open_settings()
+        settings.themeCombo.setCurrentIndex(1)
+        old_size = self.app.font().pointSizeF()
+        settings.saveButton.click()
+        self.app.processEvents()
+        self.assertEqual(self.app.font().pointSizeF(), old_size)
+        self.assertEqual(self.w.database.theme(), "dark")
+        self.assertTrue(self.w.selection_valid)
+        self.assertEqual(self.w.selection_rows, before)
+        for window in [self.w] + self.w.windows:
+            self.assertLess(
+                window.palette().color(QPalette.ColorRole.Window).lightness(),
+                80,
+            )
+            self.assertGreater(
+                window.palette().color(QPalette.ColorRole.Text).lightness(),
+                200,
+            )
+        self.w.close()
+        self.w = MainWindow(self.filename)
+        self.assertEqual(self.w.database.theme(), "dark")
+        self.assertLess(
+            self.w.palette().color(QPalette.ColorRole.Base).lightness(), 80
+        )
+        self.w.settings_window.open_settings()
+        self.w.settings_window.themeCombo.setCurrentIndex(0)
+        self.w.settings_window.saveButton.click()
+        self.assertGreater(
+            self.w.palette().color(QPalette.ColorRole.Base).lightness(), 200
+        )
+
+    def test_theme_settings_write_error_keeps_form_and_palette(self):
+        settings = self.w.settings_window
+        settings.open_settings()
+        settings.personsSpin.setValue(7)
+        settings.themeCombo.setCurrentIndex(1)
+        with patch.object(
+            self.w.database,
+            "save_settings",
+            side_effect=sqlite3.OperationalError("Только чтение"),
+        ):
+            settings.saveButton.click()
+        self.assertTrue(settings.isVisible())
+        self.assertEqual(settings.state(), (7, "dark"))
+        self.assertEqual(self.w.database.theme(), "light")
+        self.assertEqual(self.w.database.persons(), 2)
+        self.assertGreater(
+            self.w.palette().color(QPalette.ColorRole.Base).lightness(), 200
+        )
 
     def test_new_ingredient_from_recipe_preserves_draft(self):
         self.w.new_recipe()
