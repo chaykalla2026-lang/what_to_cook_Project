@@ -1,33 +1,40 @@
-"""Общие пути и постоянные значения приложения."""
+"""Чтение примеров из CSV. Позже здесь появятся запросы к SQLite."""
 
+import csv
 import os
 
-from PyQt6.QtCore import QStandardPaths
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 CATEGORIES = [
-    "Завтраки",
-    "Супы",
-    "Основные блюда",
-    "Салаты",
-    "Десерты",
-    "Другое",
+    'Завтраки', 'Супы', 'Основные блюда', 'Салаты', 'Десерты', 'Другое'
 ]
-UNITS = ["г", "мл", "шт"]
-NUTRIENTS = ["calories", "protein", "fat", "carbs"]
 
 
 def project_file(folder, filename):
     return os.path.join(PROJECT_DIR, folder, filename)
 
 
-def data_directory():
-    # При проверке используется отдельная временная папка.
-    path = os.environ.get("WHAT_TO_COOK_DATA_DIR")
-    if not path:
-        path = QStandardPaths.writableLocation(
-            QStandardPaths.StandardLocation.AppDataLocation
-        )
-    if not path:
-        raise OSError("Не удалось определить папку для сохранения данных.")
-    return path
+def read_csv(filename):
+    with open(project_file('data', filename), encoding='utf-8-sig', newline='') as file:
+        rows = list(csv.reader(file, delimiter=';'))
+    if not rows:
+        return []
+    for row in rows[1:]:
+        if row and len(row) != len(rows[0]):
+            raise ValueError(f'В файле {filename} строка не совпадает с заголовком')
+    return [dict(zip(rows[0], row)) for row in rows[1:] if row]
+
+
+def load_data():
+    data = {}
+    for name in ['recipes', 'ingredients', 'recipe_ingredients', 'fridge',
+                 'app_settings']:
+        data[name] = read_csv(name + '.csv')
+    return data
+
+
+def find_record(records, record_id):
+    for record in records:
+        if record['id'] == record_id:
+            return record
+    return None

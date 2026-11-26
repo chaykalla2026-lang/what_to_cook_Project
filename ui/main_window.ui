@@ -27,11 +27,11 @@
     </item>
     <item>
      <widget class="QLabel" name="draftLabel">
+      <property name="text">
+       <string>Черновой интерфейс: просмотр примеров и переходы между окнами. Серые элементы будут подключены позже.</string>
+      </property>
       <property name="wordWrap">
        <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Книга рецептов, домашние продукты и подбор блюд.</string>
       </property>
      </widget>
     </item>
@@ -158,7 +158,10 @@
                 <string>Сбросить фильтры</string>
                </property>
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
+               </property>
+               <property name="toolTip">
+                <string>Будет подключено на следующем этапе</string>
                </property>
               </widget>
              </item>
@@ -166,14 +169,7 @@
            </item>
           </layout>
           <property name="enabled">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="recipesHint">
-          <property name="text">
-           <string />
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -239,10 +235,7 @@
             <string>Избранное</string>
            </property>
           </column>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>100</number>
-          </attribute>
-         </widget>
+         <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="layout4">
@@ -273,7 +266,10 @@
              <string>Удалить</string>
             </property>
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Будет подключено на следующем этапе</string>
             </property>
            </widget>
           </item>
@@ -283,7 +279,10 @@
              <string>Экспорт CSV</string>
             </property>
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Будет подключено на следующем этапе</string>
             </property>
            </widget>
           </item>
@@ -311,14 +310,7 @@
            </item>
           </layout>
           <property name="enabled">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="ingredientsHint">
-          <property name="text">
-           <string />
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -374,10 +366,7 @@
             <string>Углеводы, г</string>
            </property>
           </column>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>100</number>
-          </attribute>
-         </widget>
+         <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="layout7">
@@ -401,7 +390,10 @@
              <string>Удалить</string>
             </property>
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Будет подключено на следующем этапе</string>
             </property>
            </widget>
           </item>
@@ -416,11 +408,11 @@
        <layout class="QVBoxLayout" name="layout11">
         <item>
          <widget class="QLabel" name="fridgeHint">
+          <property name="text">
+           <string>Все домашние запасы: продукты из холодильника, морозилки и шкафа.</string>
+          </property>
           <property name="wordWrap">
            <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Все домашние запасы.</string>
           </property>
          </widget>
         </item>
@@ -439,7 +431,7 @@
            </item>
           </layout>
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -475,10 +467,7 @@
             <string>Единица</string>
            </property>
           </column>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>100</number>
-          </attribute>
-         </widget>
+         <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="layout10">
@@ -502,7 +491,10 @@
              <string>Удалить из холодильника</string>
             </property>
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Будет подключено на следующем этапе</string>
             </property>
            </widget>
           </item>
@@ -641,7 +633,10 @@
                 <string>Подобрать</string>
                </property>
                <property name="enabled">
-                <bool>true</bool>
+                <bool>false</bool>
+               </property>
+               <property name="toolTip">
+                <string>Будет подключено на следующем этапе</string>
                </property>
               </widget>
              </item>
@@ -649,17 +644,17 @@
            </item>
           </layout>
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="selectionHint">
+          <property name="text">
+           <string>Здесь появятся результаты подбора. Расчёты будут добавлены позже.</string>
+          </property>
           <property name="wordWrap">
            <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Нажмите «Подобрать», чтобы рассчитать блюда.</string>
           </property>
          </widget>
         </item>
@@ -720,10 +715,7 @@
             <string>Углеводы, г</string>
            </property>
           </column>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>100</number>
-          </attribute>
-         </widget>
+         <attribute name="horizontalHeaderMinimumSectionSize"><number>100</number></attribute></widget>
         </item>
         <item>
          <widget class="QPushButton" name="openSelectionButton">
@@ -731,7 +723,10 @@
            <string>Открыть рецепт</string>
           </property>
           <property name="enabled">
-           <bool>true</bool>
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Будет подключено на следующем этапе</string>
           </property>
          </widget>
         </item>
@@ -781,7 +776,7 @@
     <string>Экспорт рецептов в CSV</string>
    </property>
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionExit">
@@ -810,12 +805,6 @@
    </property>
   </action>
   <widget class="QStatusBar" name="statusbar" />
-  <property name="minimumSize">
-   <size>
-    <width>1024</width>
-    <height>700</height>
-   </size>
-  </property>
  </widget>
  <resources />
  <connections />
